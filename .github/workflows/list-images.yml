@@ -14,7 +14,7 @@ jobs:
         run: |
           if [ -d images ]; then
             echo "Saving list of files in the images directory to images-list.txt:"
-            ls assets/images > web/images-list.txt
+            ls web/images > assets/images-list.txt
             cat assets/images-list.txt
           else
             echo "The images directory does not exist."
