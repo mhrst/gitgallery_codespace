@@ -30,7 +30,11 @@ class MyApp extends StatelessWidget {
             future: loadAsset(),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot.data ?? '');
+                final images = (snapshot.data ?? '').split('\n');
+                return SingleChildScrollView(child: Column(children: [
+                  for(final image in images)
+                  Image.network('images/$image'),
+                ],),);
               } else {
                 return const CircularProgressIndicator();
               }
