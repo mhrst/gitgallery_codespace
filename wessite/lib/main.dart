@@ -26,7 +26,10 @@ class WessiteApp extends StatelessWidget {
                     child: Column(
                       children: [
                         for (final image in images)
-                          Image.network('images/$image'),
+                          InkWell(
+                            onTap: () => context.goNamed('bw'),
+                            child: Image.network('images/$image'),
+                          ),
                       ],
                     ),
                   );
@@ -35,6 +38,15 @@ class WessiteApp extends StatelessWidget {
                 }
               },
             ),
+          );
+        },
+      ),
+      GoRouterConfig(
+        name: 'bw',
+        path: '/bw',
+        builder: (context, state) {
+          return const Scaffold(
+            body: Text('kjk'),
           );
         },
       ),
