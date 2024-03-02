@@ -56,6 +56,7 @@ class _GoRouterAppState extends State<GoRouterApp> {
   @override
   void initState() {
     super.initState();
+    GoRouter.optionURLReflectsImperativeAPIs = true;
     routerConfig = GoRouter(
       navigatorKey: widget.rootNavigatorKey,
       observers: widget.observers,
