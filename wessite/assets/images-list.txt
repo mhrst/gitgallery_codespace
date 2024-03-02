@@ -1,6 +1,6 @@
-wessite/web/images/color/IMG_6994.jpg
-wessite/web/images/color/IMG_7135.jpg
-wessite/web/images/color/IMG_2996.jpg
-wessite/web/images/black_and_white/IMG_6994.jpg
-wessite/web/images/black_and_white/IMG_7135.jpg
-wessite/web/images/black_and_white/IMG_2996.jpg
+images/color/IMG_6994.jpg
+images/color/IMG_7135.jpg
+images/color/IMG_2996.jpg
+images/black_and_white/IMG_6994.jpg
+images/black_and_white/IMG_7135.jpg
+images/black_and_white/IMG_2996.jpg
