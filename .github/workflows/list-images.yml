@@ -12,7 +12,7 @@ jobs:
 
       - name: List files in the images directory and save to a file
         run: |
-          if [ -d images ]; then
+          if [ -d web/images ]; then
             echo "Saving list of files in the images directory to images-list.txt:"
             find web/images -maxdepth 2 > assets/images-list.txt
             cat assets/images-list.txt
