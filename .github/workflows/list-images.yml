@@ -14,7 +14,7 @@ jobs:
         run: |
           if [ -d wessite/web/images ]; then
             echo "Saving list of files in the images directory to images-list.txt:"
-            find wessite/web/images -maxdepth 2 -type f > wessite/assets/images-list.txt
+            find wessite/web/images -maxdepth 2 -type f | sed 's|wessite/web/||' > wessite/assets/images-list.txt
             cat wessite/assets/images-list.txt
           else
             echo "The images directory does not exist."
