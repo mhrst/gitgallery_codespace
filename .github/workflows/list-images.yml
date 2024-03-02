@@ -14,7 +14,7 @@ jobs:
         run: |
           if [ -d wessite/web/images ]; then
             echo "Saving list of files in the images directory to images-list.txt:"
-            find wessite/web/images -maxdepth 2 > wessite/assets/images-list.txt
+            find wessite/web/images -maxdepth 2 -type f > wessite/assets/images-list.txt
             cat wessite/assets/images-list.txt
           else
             echo "The images directory does not exist."
@@ -24,7 +24,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          if [ -f images-list.txt ]; then
+          if [ -f wessite/assets/images-list.txt ]; then
             git add wessite/assets/images-list.txt
             git commit -m "Update images list"
             git push
