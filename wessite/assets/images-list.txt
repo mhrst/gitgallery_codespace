@@ -1,3 +1,7 @@
+images/new_gallery/2078-018-7A.jpg
+images/new_gallery/2172-059-28.jpg
+images/new_gallery/2078-022-9A.jpg
+images/new_gallery/2078-020-8A.jpg
 images/color/IMG_6994.jpg
 images/color/IMG_7135.jpg
 images/color/IMG_2996.jpg
