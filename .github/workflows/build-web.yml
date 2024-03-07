@@ -6,12 +6,29 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List files in the images directory and save to a file
+        run: |
+          if [ -d wessite/web/images ]; then
+            echo "Saving list of files in the images directory to images-list.txt:"
+            find wessite/web/images -maxdepth 2 -type f ! -name "*.txt" | sed 's|wessite/web/||' > wessite/assets/images-list.txt
+            cat wessite/assets/images-list.txt
+          else
+            echo "The images directory does not exist."
+          fi
+
+      - name: Futter action
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: cd wessite
-      - run: flutter pub get
-      - run: flutter build web
+
+      - name: Pub get
+        run: cd wessite && flutter pub get
+
+      - name: Build web
+        run: cd wessite && flutter build web
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
