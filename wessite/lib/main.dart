@@ -292,6 +292,7 @@ class _WessiteAppState extends State<WessiteApp> {
         galleryImages[galleryName] ??= [];
         galleryImages[galleryName]!.add(filename);
         if (galleryDescriptions[galleryName] == null) {
+          galleryDescriptions[galleryName] = '';
           futures.add(http
               .get(Uri.parse('images/$galleryName/description.txt'))
               .then((value) {
