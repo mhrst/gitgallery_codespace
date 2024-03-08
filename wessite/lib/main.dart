@@ -32,6 +32,7 @@ class _WessiteAppState extends State<WessiteApp> {
 
   String email = '';
   String instagram = '';
+  String about = '';
 
   @override
   Widget build(BuildContext context) {
@@ -201,14 +202,7 @@ class _WessiteAppState extends State<WessiteApp> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FutureBuilder(
-                          future: http.get(Uri.parse('about.txt')),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Text(snapshot.data?.body ?? '');
-                            }
-                            return const CircularProgressIndicator();
-                          }),
+                      Text(about),
                       const SizedBox(height: 16),
                       TextButton.icon(
                         label: Text('@$instagram'),
@@ -281,6 +275,7 @@ class _WessiteAppState extends State<WessiteApp> {
   void initState() {
     super.initState();
     final futures = <Future>[
+      http.get(Uri.parse('about.txt')).then((value) => about = value.body),
       http.get(Uri.parse('email.txt')).then((value) => email = value.body),
       http
           .get(Uri.parse('instagram.txt'))
