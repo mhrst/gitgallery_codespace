@@ -276,22 +276,22 @@ class _WessiteAppState extends State<WessiteApp> {
           .get(Uri.parse('instagram.txt'))
           .then((value) => instagram = value.body),
     ];
-    futures.add(rootBundle.loadString('assets/images-list.txt').then((value) {
-      value.trim().split('\n').forEach((filename) {
+    futures.add(
+        rootBundle.loadString('assets/images-list.txt').then((value) async {
+      for (final filename in value.trim().split('\n')) {
         final galleryName = filename.split('/')[1];
         galleryImages[galleryName] ??= [];
         galleryImages[galleryName]!.add(filename);
         if (galleryDescriptions[galleryName] == null) {
-          galleryDescriptions[galleryName] = '';
-          futures.add(http
-              .get(Uri.parse('images/$galleryName/description.txt'))
-              .then((value) {
+          try {
+            final value = await http
+                .get(Uri.parse('images/$galleryName/description.txt'));
             galleryDescriptions[galleryName] = value.body;
-          }).onError((error, stackTrace) {
+          } catch (e) {
             galleryDescriptions[galleryName] = '';
-          }));
+          }
         }
-      });
+      }
     }));
     Future.wait(futures).then((value) => setState(() => loaded = true));
   }
