@@ -5,8 +5,8 @@ import 'package:common/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const WessiteApp());
@@ -21,6 +21,43 @@ class WessiteApp extends StatefulWidget {
   State<WessiteApp> createState() => _WessiteAppState();
 }
 
+class WessitePage extends StatelessWidget {
+  final Widget child;
+  final String email;
+  final String instagram;
+
+  const WessitePage({
+    Key? key,
+    required this.child,
+    required this.email,
+    required this.instagram,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Column(
+        children: [
+          child,
+          Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 32),
+                IconButton(
+                  onPressed: () =>
+                      launchUrl(Uri.parse('http://instagram.com/$instagram')),
+                  icon: const Icon(FontAwesomeIcons.instagram),
+                ),
+                IconButton(
+                  onPressed: () => launchUrl(Uri.parse('mailto:$email')),
+                  icon: const Icon(Icons.email_outlined),
+                ),
+                const SizedBox(height: 64),
+              ],
+            ),
+          ),
+        ],
+      );
+}
+
 class _WessiteAppState extends State<WessiteApp> {
   final scroll = ScrollController();
   bool loaded = false;
@@ -33,6 +70,9 @@ class _WessiteAppState extends State<WessiteApp> {
   String email = '';
   String instagram = '';
   String about = '';
+
+  Iterable<String> get galleryNames =>
+      galleryImages.keys.where((name) => name != '_home');
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +91,7 @@ class _WessiteAppState extends State<WessiteApp> {
           },
         ),
       ),
-      appName: 'app',
+      appName: 'Wes Akers Photography',
       shellBuilder: (context, state, child) =>
           LayoutBuilder(builder: (context, constraints) {
         return Scaffold(
@@ -79,7 +119,7 @@ class _WessiteAppState extends State<WessiteApp> {
                             child: Text(
                               'Work',
                               style: context.textTheme.titleMedium?.copyWith(
-                                decoration: galleryImages.keys.any((element) =>
+                                decoration: galleryNames.any((element) =>
                                         element ==
                                         context.location
                                             .toString()
@@ -135,12 +175,11 @@ class _WessiteAppState extends State<WessiteApp> {
                               ),
                               child: Text('Work',
                                   style: TextStyle(
-                                    decoration: galleryImages.keys.any(
-                                            (element) =>
-                                                element ==
-                                                context.location
-                                                    .toString()
-                                                    .replaceAll('/', ''))
+                                    decoration: galleryNames.any((element) =>
+                                            element ==
+                                            context.location
+                                                .toString()
+                                                .replaceAll('/', ''))
                                         ? TextDecoration.underline
                                         : null,
                                   )),
@@ -177,13 +216,7 @@ class _WessiteAppState extends State<WessiteApp> {
         GoRouterConfig(
           name: 'home',
           path: '/',
-          builder: (context, state) {
-            return WessitePage(
-              email: email,
-              instagram: instagram,
-              child: const Center(child: Text('Welcome to Wessite')),
-            );
-          },
+          builder: (context, state) => _galleryBuilder('_home'),
         ),
         GoRouterConfig(
           name: 'about',
@@ -223,49 +256,11 @@ class _WessiteAppState extends State<WessiteApp> {
             );
           },
         ),
-        for (final gallery in galleryImages.keys)
+        for (final gallery in galleryNames)
           GoRouterConfig(
             name: gallery,
             path: '/$gallery',
-            builder: (context, state) {
-              final items = galleryImages[gallery]!;
-              return WessitePage(
-                  email: email,
-                  instagram: instagram,
-                  child: Column(children: [
-                    Row(
-                      children: [
-                        const SizedBox(width: 32),
-                        IconButton(
-                            onPressed: carousel.previousPage,
-                            icon: const Icon(Icons.keyboard_arrow_left)),
-                        Expanded(
-                          child: CarouselSlider.builder(
-                            carouselController: carousel,
-                            options: CarouselOptions(
-                                // aspectRatio: 1,
-                                viewportFraction: 1.0,
-                                scrollPhysics:
-                                    const NeverScrollableScrollPhysics()),
-                            itemCount: items.length,
-                            itemBuilder: (BuildContext context, int itemIndex,
-                                    int pageViewIndex) =>
-                                Image.network(items[itemIndex]),
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: carousel.nextPage,
-                            icon: const Icon(Icons.keyboard_arrow_right)),
-                        const SizedBox(width: 32),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Center(
-                          child: Text(galleryDescriptions[gallery] ?? '')),
-                    ),
-                  ]));
-            },
+            builder: (context, state) => _galleryBuilder(gallery),
           ),
       ],
     );
@@ -301,8 +296,49 @@ class _WessiteAppState extends State<WessiteApp> {
     Future.wait(futures).then((value) => setState(() => loaded = true));
   }
 
+  Widget _galleryBuilder(String gallery) {
+    final items = galleryImages[gallery]!;
+    return WessitePage(
+      email: email,
+      instagram: instagram,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const SizedBox(width: 32),
+              IconButton(
+                  onPressed: carousel.previousPage,
+                  icon: const Icon(Icons.keyboard_arrow_left)),
+              Expanded(
+                child: CarouselSlider.builder(
+                  carouselController: carousel,
+                  options: CarouselOptions(
+                      // aspectRatio: 1,
+                      viewportFraction: 1.0,
+                      scrollPhysics: const NeverScrollableScrollPhysics()),
+                  itemCount: items.length,
+                  itemBuilder: (BuildContext context, int itemIndex,
+                          int pageViewIndex) =>
+                      Image.network(items[itemIndex]),
+                ),
+              ),
+              IconButton(
+                  onPressed: carousel.nextPage,
+                  icon: const Icon(Icons.keyboard_arrow_right)),
+              const SizedBox(width: 32),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Center(child: Text(galleryDescriptions[gallery] ?? '')),
+          ),
+        ],
+      ),
+    );
+  }
+
   List<MenuItemButton> _galleryMenuChildren(BuildContext context) => [
-        for (final gallery in galleryImages.keys)
+        for (final gallery in galleryNames)
           MenuItemButton(
             child: Text(
               gallery.replaceAll('_', ' ').toTitleCase(),
@@ -323,41 +359,4 @@ extension TitleCase on String {
     });
     return capitalized.join(' ');
   }
-}
-
-class WessitePage extends StatelessWidget {
-  final Widget child;
-  final String email;
-  final String instagram;
-
-  const WessitePage({
-    Key? key,
-    required this.child,
-    required this.email,
-    required this.instagram,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          child,
-          Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 32),
-                IconButton(
-                  onPressed: () =>
-                      launchUrl(Uri.parse('http://instagram.com/$instagram')),
-                  icon: const Icon(FontAwesomeIcons.instagram),
-                ),
-                IconButton(
-                  onPressed: () => launchUrl(Uri.parse('mailto:$email')),
-                  icon: const Icon(Icons.email_outlined),
-                ),
-                const SizedBox(height: 64),
-              ],
-            ),
-          ),
-        ],
-      );
 }
